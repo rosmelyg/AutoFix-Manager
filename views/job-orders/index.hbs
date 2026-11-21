@@ -1,0 +1,93 @@
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fa-solid fa-file-invoice-dollar text-orange me-2"></i>Gestión de Órdenes de Trabajo</h2>
+            <p class="text-muted mb-0">Controla el ciclo de reparaciones, servicios, repuestos y facturación del taller.</p>
+        </div>
+        <a href="/job-orders/create" class="btn btn-orange px-4 py-2">
+            <i class="fa-solid fa-plus me-1"></i> Nueva Orden de Trabajo
+        </a>
+    </div>
+
+    {{#if success}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>{{success}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {{/if}}
+
+    {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>{{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {{/if}}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">No. Orden</th>
+                            <th>Vehículo</th>
+                            <th>Placa</th>
+                            <th>Fecha Recepción</th>
+                            <th>Fecha Estimada</th>
+                            <th>Estado</th>
+                            <th>Total General</th>
+                            <th class="text-end pe-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each jobOrders}}
+                        <tr>
+                            <td class="ps-3 fw-bold text-dark">{{this.orderNumber}}</td>
+                            <td>{{this.Vehicle.Brand.name}} {{this.Vehicle.model}}</td>
+                            <td><span class="badge bg-light text-dark border">{{this.Vehicle.plate}}</span></td>
+                            <td>{{this.receptionDate}}</td>
+                            <td>
+                                {{#if this.estimatedDeliveryDate}}
+                                    {{this.estimatedDeliveryDate}}
+                                {{else}}
+                                    <span class="text-muted">-</span>
+                                {{/if}}
+                            </td>
+                            <td>
+                                <span class="badge {{statusBadgeClass this.status}}">{{this.status}}</span>
+                            </td>
+                            <td class="fw-bold text-orange">${{formatCurrency this.totalGeneral}}</td>
+                            <td class="text-end pe-3">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/job-orders/detail/{{this.id}}" class="btn btn-outline-info" title="Ver Detalle">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    {{#if (ne this.status 'Entregada')}}
+                                        {{#if (ne this.status 'Cancelada')}}
+                                            <a href="/job-orders/edit/{{this.id}}" class="btn btn-outline-primary" title="Editar Datos Generales">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <form action="/job-orders/cancel/{{this.id}}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de cancelar esta orden? Las piezas serán devueltas al inventario.');">
+                                                <button type="submit" class="btn btn-outline-danger" title="Cancelar Orden">
+                                                    <i class="fa-solid fa-ban"></i>
+                                                </button>
+                                            </form>
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fa-solid fa-clipboard-list fa-2x mb-2 d-block"></i>
+                                No hay órdenes de trabajo registradas.
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

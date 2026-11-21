@@ -1,0 +1,74 @@
+<div class="container-fluid pt-2">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h4 class="card-title fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-plus-circle text-orange me-2"></i>Registrar Nueva Orden de Trabajo
+            </h4>
+        </div>
+        <div class="card-body p-4">
+            {{#if error}}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i>{{error}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {{/if}}
+
+            <form action="/job-orders/create" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="orderNumber" class="form-label fw-semibold">Número de Orden <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="orderNumber" name="orderNumber" value="{{order.orderNumber}}" placeholder="Ej. OT-2026-001" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="vehicleId" class="form-label fw-semibold">Vehículo <span class="text-danger">*</span></label>
+                        <select class="form-select" id="vehicleId" name="vehicleId" required>
+                            <option value="">Seleccione un vehículo disponible</option>
+                            {{#each vehicles}}
+                                <option value="{{this.id}}" data-mileage="{{this.currentMileage}}" {{#if (eq ../order.vehicleId this.id)}}selected{{/if}}>
+                                    {{this.plate}} - {{this.Brand.name}} {{this.model}} ({{this.year}}) [Km actual: {{this.currentMileage}}]
+                                </option>
+                            {{/each}}
+                        </select>
+                        <div class="form-text">Solo vehículos que no tengan una orden activa en taller.</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="receptionDate" class="form-label fw-semibold">Fecha de Recepción <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="receptionDate" name="receptionDate" value="{{order.receptionDate}}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="estimatedDeliveryDate" class="form-label fw-semibold">Fecha Estimada de Entrega</label>
+                        <input type="date" class="form-control" id="estimatedDeliveryDate" name="estimatedDeliveryDate" value="{{order.estimatedDeliveryDate}}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="entryMileage" class="form-label fw-semibold">Kilometraje de Entrada <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" class="form-control" id="entryMileage" name="entryMileage" value="{{order.entryMileage}}" placeholder="0.00" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="problemDescription" class="form-label fw-semibold">Descripción del Problema <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="problemDescription" name="problemDescription" rows="3" placeholder="Problema o falla reportada por el propietario..." required>{{order.problemDescription}}</textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="initialDiagnosis" class="form-label fw-semibold">Diagnóstico Inicial</label>
+                        <textarea class="form-control" id="initialDiagnosis" name="initialDiagnosis" rows="2" placeholder="Observaciones preliminares del mecánico o asesor...">{{order.initialDiagnosis}}</textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="observations" class="form-label fw-semibold">Observaciones Adicionales</label>
+                        <textarea class="form-control" id="observations" name="observations" rows="2" placeholder="Notas sobre el estado físico del vehículo...">{{order.observations}}</textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="/job-orders" class="btn btn-secondary px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-orange px-4">Guardar y Continuar a Detalle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

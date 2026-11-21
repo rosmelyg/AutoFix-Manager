@@ -1,0 +1,223 @@
+<div class="container-fluid">
+    <!-- Encabezado general del sistema -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">
+                <i class="fa-solid fa-screwdriver-wrench text-orange me-2"></i>AutoFix Manager
+            </h2>
+            <p class="text-muted mb-0">Resumen general del estado actual del taller mecánico y operaciones activas.</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas de resumen del taller -->
+    <div class="row g-3 mb-4">
+        <!-- Total de vehículos registrados -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 border-start border-4 border-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Vehículos Registrados</span>
+                            <h3 class="fw-bold mb-0 text-dark">{{totalVehicles}}</h3>
+                        </div>
+                        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle">
+                            <i class="fa-solid fa-car fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total de órdenes de trabajo registradas -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Total de Órdenes</span>
+                            <h3 class="fw-bold mb-0 text-dark">{{totalOrders}}</h3>
+                        </div>
+                        <div class="p-3 bg-secondary bg-opacity-10 text-secondary rounded-circle">
+                            <i class="fa-solid fa-file-lines fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cantidad de órdenes activas -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 border-start border-4 border-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Órdenes Activas</span>
+                            <h3 class="fw-bold mb-0 text-warning">{{activeOrdersCount}}</h3>
+                        </div>
+                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle">
+                            <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cantidad de órdenes finalizadas (entregadas) -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 border-start border-4 border-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Órdenes Finalizadas</span>
+                            <h3 class="fw-bold mb-0 text-success">{{deliveredOrdersCount}}</h3>
+                        </div>
+                        <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle">
+                            <i class="fa-solid fa-circle-check fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cantidad de órdenes canceladas -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card shadow-sm border-0 border-start border-4 border-danger h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Órdenes Canceladas</span>
+                            <h3 class="fw-bold mb-0 text-danger">{{canceledOrdersCount}}</h3>
+                        </div>
+                        <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-circle">
+                            <i class="fa-solid fa-ban fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total facturado en órdenes entregadas -->
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card shadow-sm border-0 border-start border-4 border-info h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Total Facturado</span>
+                            <h3 class="fw-bold mb-0 text-dark">${{totalRevenue}}</h3>
+                        </div>
+                        <div class="p-3 bg-info bg-opacity-10 text-info rounded-circle">
+                            <i class="fa-solid fa-money-bill-wave fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cantidad de piezas con bajo inventario -->
+        <div class="col-12 col-sm-12 col-xl-4">
+            <div class="card shadow-sm border-0 border-start border-4 border-danger h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Bajo Inventario (Repuestos)</span>
+                            <h3 class="fw-bold mb-0 text-danger">{{lowStockPartsCount}}</h3>
+                        </div>
+                        <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-circle">
+                            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-bolt text-orange me-2"></i>Accesos Rápidos
+            </h5>
+        </div>
+        <div class="card-body py-3">
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <a href="/vehicles/create" class="btn btn-outline-dark w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-car text-orange"></i>
+                        <span>Registrar Vehículo</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="/parts/create" class="btn btn-outline-dark w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-gears text-orange"></i>
+                        <span>Registrar Pieza</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="/services/create" class="btn btn-outline-dark w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-toolbox text-orange"></i>
+                        <span>Registrar Servicio</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="/job-orders/create" class="btn btn-orange w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Crear Orden de Trabajo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listado de últimas órdenes registradas -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-clock-rotate-left text-orange me-2"></i>Últimas Órdenes de Trabajo Registradas
+            </h5>
+            <a href="/job-orders" class="btn btn-sm btn-outline-secondary">Ver Todas las Órdenes</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Número de Orden</th>
+                            <th>Vehículo</th>
+                            <th>Placa</th>
+                            <th>Fecha de Recepción</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th class="text-end pe-3">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each recentOrders}}
+                        <tr>
+                            <td class="ps-3 fw-bold text-dark">{{this.orderNumber}}</td>
+                            <td>{{this.Vehicle.Brand.name}} {{this.Vehicle.model}}</td>
+                            <td><span class="badge bg-light text-dark border">{{this.Vehicle.plate}}</span></td>
+                            <td>{{this.receptionDate}}</td>
+                            <td>
+                                <span class="badge {{statusBadgeClass this.status}}">{{this.status}}</span>
+                            </td>
+                            <td class="fw-bold text-orange">${{formatCurrency this.totalGeneral}}</td>
+                            <td class="text-end pe-3">
+                                <a href="/job-orders/detail/{{this.id}}" class="btn btn-sm btn-outline-info">
+                                    <i class="fa-solid fa-eye me-1"></i> Ver Detalle
+                                </a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="fa-solid fa-clipboard-list fa-2x mb-2 d-block"></i>
+                                No hay órdenes registradas.
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

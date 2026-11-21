@@ -1,0 +1,42 @@
+<div class="container-fluid pt-2">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h4 class="card-title fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-pen-to-square text-orange me-2"></i>Editar Marca
+            </h4>
+        </div>
+        <div class="card-body p-4">
+            {{#if error}}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i>{{error}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {{/if}}
+
+            <form action="/brands/edit/{{brand.id}}" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Nombre de la Marca <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{brand.name}}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="originCountry" class="form-label fw-semibold">País de Origen</label>
+                    <input type="text" class="form-control" id="originCountry" name="originCountry" value="{{brand.originCountry}}">
+                </div>
+
+                <div class="mb-4">
+                    <label for="status" class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="Activa" {{#if (eq brand.status 'Activa')}}selected{{/if}}>Activa</option>
+                        <option value="Inactiva" {{#if (eq brand.status 'Inactiva')}}selected{{/if}}>Inactiva</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/brands" class="btn btn-secondary px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-orange px-4">Actualizar Marca</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

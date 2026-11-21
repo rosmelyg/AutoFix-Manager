@@ -1,0 +1,132 @@
+<div class="container-fluid pt-2">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="card-title fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-car text-orange me-2"></i>Detalle del Vehículo: {{vehicle.plate}}
+            </h4>
+            <div>
+                <a href="/vehicles/edit/{{vehicle.id}}" class="btn btn-sm btn-outline-primary me-2">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Editar
+                </a>
+                <a href="/vehicles" class="btn btn-sm btn-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-4">
+                {{#if vehicle.image}}
+                <div class="col-md-4 text-center">
+                    <img src="{{vehicle.image}}" alt="{{vehicle.plate}}" class="img-fluid rounded border shadow-sm mb-2" style="max-height: 220px; object-fit: cover;">
+                </div>
+                {{/if}}
+
+                <div class="{{#if vehicle.image}}col-md-8{{else}}col-md-12{{/if}}">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Placa</label>
+                            <p class="fs-5 fw-bold text-orange mb-0">{{vehicle.plate}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Marca</label>
+                            <p class="fs-5 fw-semibold text-dark mb-0">{{vehicle.Brand.name}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Modelo</label>
+                            <p class="fs-5 text-dark mb-0">{{vehicle.model}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Año</label>
+                            <p class="fs-5 text-dark mb-0">{{vehicle.year}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Color</label>
+                            <p class="fs-5 text-dark mb-0">{{vehicle.color}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Tipo de Vehículo</label>
+                            <p class="fs-5 text-dark mb-0">{{vehicle.vehicleType}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Kilometraje Actual</label>
+                            <p class="fs-5 text-dark mb-0">{{vehicle.currentMileage}} km</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold">Estado</label>
+                            <div>
+                                {{#if (eq vehicle.status 'Registrado')}}
+                                    <span class="badge bg-secondary fs-6">Registrado</span>
+                                {{else if (eq vehicle.status 'En taller')}}
+                                    <span class="badge bg-warning text-dark fs-6">En taller</span>
+                                {{else if (eq vehicle.status 'Fuera del taller')}}
+                                    <span class="badge bg-success fs-6">Fuera del taller</span>
+                                {{else}}
+                                    <span class="badge bg-danger fs-6">Inactivo</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12"><hr class="my-2"></div>
+
+                <div class="col-md-4">
+                    <label class="text-muted small text-uppercase fw-bold">Propietario</label>
+                    <p class="fs-5 fw-semibold text-dark mb-0">{{vehicle.ownerName}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label class="text-muted small text-uppercase fw-bold">Teléfono</label>
+                    <p class="fs-5 text-dark mb-0">{{vehicle.ownerPhone}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label class="text-muted small text-uppercase fw-bold">Correo Electrónico</label>
+                    <p class="fs-5 text-dark mb-0">
+                        {{#if vehicle.ownerEmail}}{{vehicle.ownerEmail}}{{else}}<span class="text-muted">No registrado</span>{{/if}}
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <label class="text-muted small text-uppercase fw-bold">Órdenes Asociadas</label>
+                    <p class="fs-5 fw-bold text-dark mb-0">{{vehicle.orderCount}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#if vehicle.JobOrders.length}}
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">Órdenes de Trabajo del Vehículo</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">No. Orden</th>
+                            <th>Fecha Recepción</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th class="text-end pe-3">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each vehicle.JobOrders}}
+                        <tr>
+                            <td class="ps-3 fw-bold">{{this.orderNumber}}</td>
+                            <td>{{this.receptionDate}}</td>
+                            <td><span class="badge bg-secondary">{{this.status}}</span></td>
+                            <td>${{formatCurrency this.totalGeneral}}</td>
+                            <td class="text-end pe-3">
+                                <a href="/job-orders/detail/{{this.id}}" class="btn btn-sm btn-outline-info">
+                                    <i class="fa-solid fa-eye"></i> Ver
+                                </a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+</div>

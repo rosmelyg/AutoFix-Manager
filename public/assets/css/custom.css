@@ -1,0 +1,73 @@
+:root {
+    --bs-orange: #ff6600;
+    --bs-orange-rgb: 255, 102, 0;
+    --app-background: #f7f3eb;
+    --sidebar-orange: #b94a00;
+}
+
+body,
+#page-content-wrapper,
+#page-content-wrapper > main,
+#page-content-wrapper > footer {
+    background-color: var(--app-background);
+}
+
+.text-orange {
+    color: #ff6600 !important;
+}
+
+.bg-orange {
+    background-color: #ff6600 !important;
+}
+
+.btn-orange {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+}
+
+.btn-orange:hover {
+    background-color: #e65c00;
+    color: white;
+}
+
+#sidebar-wrapper .list-group-item.active-orange,
+#sidebar-wrapper .list-group-item.active {
+    background-color: var(--app-background) !important;
+    color: var(--sidebar-orange) !important;
+    border-color: var(--sidebar-orange) !important;
+    font-weight: 600;
+}
+
+#sidebar-wrapper .sidebar-heading.text-orange {
+    color: var(--sidebar-orange) !important;
+}
+
+#sidebar-wrapper {
+    background-color: var(--app-background) !important;
+    min-height: 100vh;
+    width: 260px;
+}
+
+#sidebar-wrapper .list-group {
+    background-color: var(--app-background);
+}
+
+#sidebar-wrapper .list-group-item {
+    background-color: var(--app-background);
+    color: #212529;
+}
+
+/* Ensure flex container width does not expand beyond viewport, unifying view widths */
+#wrapper {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+

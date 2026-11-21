@@ -1,0 +1,538 @@
+<div class="container-fluid">
+    <!-- Header de la Orden -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pt-2 gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <h2 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-file-invoice text-orange me-2"></i>Orden #{{order.orderNumber}}
+                </h2>
+                <span class="badge {{statusBadgeClass order.status}} fs-6 px-3 py-2">{{order.status}}</span>
+                {{#if isClosed}}
+                    <span class="badge bg-dark fs-6 px-3 py-2"><i class="fa-solid fa-lock me-1"></i>Cerrada</span>
+                {{/if}}
+            </div>
+            <p class="text-muted mb-0">Recepción: {{order.receptionDate}} | Vehículo: {{order.Vehicle.plate}} ({{order.Vehicle.Brand.name}} {{order.Vehicle.model}})</p>
+        </div>
+        <div class="d-flex gap-2">
+            {{#unless isClosed}}
+                <a href="/job-orders/edit/{{order.id}}" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Editar Generales
+                </a>
+                <form action="/job-orders/cancel/{{order.id}}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de cancelar esta orden? Las piezas serán devueltas al inventario.');">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-ban me-1"></i> Cancelar Orden
+                    </button>
+                </form>
+            {{/unless}}
+            <a href="/job-orders" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    {{#if success}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>{{success}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {{/if}}
+
+    {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>{{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {{/if}}
+
+    <div class="row g-4">
+        <!-- 1. Información General & 2. Información del Vehículo -->
+        <div class="col-lg-6">
+            <!-- 1. Información general de la orden -->
+            <div class="card shadow-sm border-0 mb-4 h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-circle-info text-orange me-2"></i>1. Información General de la Orden
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Número de Orden</span>
+                            <p class="fs-6 fw-bold text-dark mb-0">{{order.orderNumber}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Estado Actual</span>
+                            <div><span class="badge {{statusBadgeClass order.status}}">{{order.status}}</span></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Fecha de Recepción</span>
+                            <p class="fs-6 text-dark mb-0">{{order.receptionDate}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Fecha Estimada de Entrega</span>
+                            <p class="fs-6 text-dark mb-0">
+                                {{#if order.estimatedDeliveryDate}}{{order.estimatedDeliveryDate}}{{else}}<span class="text-muted">No registrada</span>{{/if}}
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Kilometraje de Entrada</span>
+                            <p class="fs-6 text-dark mb-0">{{order.entryMileage}} km</p>
+                        </div>
+                        <div class="col-12"><hr class="my-1"></div>
+                        <div class="col-12">
+                            <span class="text-muted small text-uppercase fw-bold">Descripción del Problema</span>
+                            <p class="text-dark bg-light p-2 rounded mb-0">{{order.problemDescription}}</p>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small text-uppercase fw-bold">Diagnóstico Inicial</span>
+                            <p class="text-dark bg-light p-2 rounded mb-0">
+                                {{#if order.initialDiagnosis}}{{order.initialDiagnosis}}{{else}}<span class="text-muted">Sin diagnóstico inicial</span>{{/if}}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small text-uppercase fw-bold">Observaciones</span>
+                            <p class="text-dark bg-light p-2 rounded mb-0">
+                                {{#if order.observations}}{{order.observations}}{{else}}<span class="text-muted">Sin observaciones adicionales</span>{{/if}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- 2. Información del vehículo en la orden -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-car text-orange me-2"></i>2. Información del Vehículo
+                    </h5>
+                    <a href="/vehicles/detail/{{order.Vehicle.id}}" class="btn btn-sm btn-outline-info">
+                        <i class="fa-solid fa-external-link me-1"></i> Ficha Vehículo
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Placa</span>
+                            <p class="fs-5 fw-bold text-orange mb-0">{{order.Vehicle.plate}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Marca y Modelo</span>
+                            <p class="fs-6 fw-bold text-dark mb-0">{{order.Vehicle.Brand.name}} {{order.Vehicle.model}}</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted small text-uppercase fw-bold">Año</span>
+                            <p class="fs-6 text-dark mb-0">{{order.Vehicle.year}}</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted small text-uppercase fw-bold">Color</span>
+                            <p class="fs-6 text-dark mb-0">{{order.Vehicle.color}}</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted small text-uppercase fw-bold">Tipo</span>
+                            <p class="fs-6 text-dark mb-0">{{order.Vehicle.vehicleType}}</p>
+                        </div>
+                        <div class="col-12"><hr class="my-1"></div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Propietario</span>
+                            <p class="fs-6 fw-semibold text-dark mb-0">{{order.Vehicle.ownerName}}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-bold">Teléfono de Contacto</span>
+                            <p class="fs-6 text-dark mb-0">{{order.Vehicle.ownerPhone}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Estado actual de la orden & Cambios de estado -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-arrows-spin text-orange me-2"></i>7. Estado Actual y Flujo de la Orden
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {{#if isClosed}}
+                        <div class="alert alert-secondary mb-0">
+                            <i class="fa-solid fa-lock me-2"></i>
+                            Esta orden se encuentra en estado <strong>{{order.status}}</strong> y está cerrada. No admite cambios de estado ni modificaciones en servicios, repuestos ni evidencias.
+                        </div>
+                    {{else}}
+                        <form action="/job-orders/status/{{order.id}}" method="POST">
+                            <label class="form-label fw-semibold">Cambiar Estado de la Orden:</label>
+                            <div class="input-group">
+                                <select name="newStatus" class="form-select" required>
+                                    {{#each orderStatuses}}
+                                        <option value="{{this}}" {{#if (eq ../order.status this)}}selected{{/if}}>{{this}}</option>
+                                    {{/each}}
+                                </select>
+                                <button type="submit" class="btn btn-dark">Actualizar Estado</button>
+                            </div>
+                            <div class="form-text mt-2 text-muted">
+                                * Nota: Para marcar como <strong>Entregada</strong>, la orden debe tener al menos un servicio registrado. Si se marca como <strong>Cancelada</strong>, los repuestos utilizados serán reintegrados automáticamente al inventario.
+                            </div>
+                        </form>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Servicios agregados a la orden -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-toolbox text-orange me-2"></i>3. Servicios Realizados en la Orden
+                    </h5>
+                    <span class="badge bg-light text-dark border">Subtotal Servicios: ${{formatCurrency order.subtotalServices}}</span>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Formulario para agregar servicio (si orden no cerrada) -->
+                    {{#unless isClosed}}
+                    <div class="bg-light p-3 rounded mb-4 border">
+                        <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-plus me-1"></i>Agregar Servicio a la Orden</h6>
+                        <form action="/job-orders/{{order.id}}/services/add" method="POST" class="row g-2 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label small fw-semibold">Servicio Activo</label>
+                                <select name="serviceId" id="selectService" class="form-select form-select-sm" required onchange="updateServicePrice(this)">
+                                    <option value="">Seleccione un servicio...</option>
+                                    {{#each activeServices}}
+                                        <option value="{{this.id}}" data-price="{{this.basePrice}}">{{this.name}} - ${{formatCurrency this.basePrice}} ({{this.category}})</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-semibold">Precio Aplicado ($)</label>
+                                <input type="number" step="0.01" min="0.01" name="appliedPrice" id="appliedPriceInput" class="form-control form-control-sm" placeholder="0.00" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-semibold">Nota / Detalle (Opcional)</label>
+                                <input type="text" name="note" class="form-control form-control-sm" placeholder="Ej. Cambio lado derecho">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm btn-orange w-100">
+                                    <i class="fa-solid fa-plus me-1"></i> Agregar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {{/unless}}
+
+                    <!-- Tabla de servicios de la orden -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Servicio</th>
+                                    <th>Categoría</th>
+                                    <th>Precio Aplicado</th>
+                                    <th>Nota</th>
+                                    <th class="text-end pe-3">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each servicesList}}
+                                <tr>
+                                    <td class="ps-3 fw-bold">{{this.Service.name}}</td>
+                                    <td><span class="badge bg-light text-dark border">{{this.Service.category}}</span></td>
+                                    <td class="fw-semibold text-dark">${{formatCurrency this.appliedPrice}}</td>
+                                    <td>{{#if this.note}}{{this.note}}{{else}}<span class="text-muted">-</span>{{/if}}</td>
+                                    <td class="text-end pe-3">
+                                        {{#unless ../isClosed}}
+                                        <form action="/job-orders/{{../order.id}}/services/delete/{{this.id}}" method="POST" class="d-inline" onsubmit="return confirm('¿Quitar este servicio de la orden?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar servicio">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                        {{else}}
+                                            <span class="text-muted small"><i class="fa-solid fa-lock"></i></span>
+                                        {{/unless}}
+                                    </td>
+                                </tr>
+                                {{else}}
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-muted">
+                                        No hay servicios agregados a esta orden todavía.
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Piezas utilizadas en la orden -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-gears text-orange me-2"></i>4. Piezas o Repuestos Utilizados
+                    </h5>
+                    <span class="badge bg-light text-dark border">Subtotal Piezas: ${{formatCurrency order.subtotalParts}}</span>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Formulario para agregar repuesto (si orden no cerrada) -->
+                    {{#unless isClosed}}
+                    <div class="bg-light p-3 rounded mb-4 border">
+                        <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-plus me-1"></i>Agregar Pieza a la Orden</h6>
+                        <form action="/job-orders/{{order.id}}/parts/add" method="POST" class="row g-2 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label small fw-semibold">Pieza en Inventario</label>
+                                <select name="partId" id="selectPart" class="form-select form-select-sm" required onchange="updatePartPrice(this)">
+                                    <option value="">Seleccione un repuesto...</option>
+                                    {{#each activeParts}}
+                                        <option value="{{this.id}}" data-price="{{this.salePrice}}" data-stock="{{this.stockActual}}">
+                                            {{this.code}} - {{this.name}} [Stock disp: {{this.stockActual}}] (${{formatCurrency this.salePrice}})
+                                        </option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-semibold">Cantidad</label>
+                                <input type="number" min="1" name="quantity" id="partQuantityInput" class="form-control form-control-sm" value="1" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-semibold">Precio Unitario Aplicado ($)</label>
+                                <input type="number" step="0.01" min="0.01" name="unitPriceApplied" id="partPriceInput" class="form-control form-control-sm" placeholder="0.00" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm btn-orange w-100">
+                                    <i class="fa-solid fa-plus me-1"></i> Agregar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {{/unless}}
+
+                    <!-- Tabla de piezas utilizadas -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Código</th>
+                                    <th>Pieza / Repuesto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                    <th class="text-end pe-3">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each partsList}}
+                                <tr>
+                                    <td class="ps-3 fw-bold text-secondary">{{this.Part.code}}</td>
+                                    <td class="fw-semibold">{{this.Part.name}}</td>
+                                    <td class="text-center fw-bold">{{this.quantity}}</td>
+                                    <td>${{formatCurrency this.unitPriceApplied}}</td>
+                                    <td class="fw-bold text-dark">${{formatCurrency this.subtotal}}</td>
+                                    <td class="text-end pe-3">
+                                        {{#unless ../isClosed}}
+                                        <form action="/job-orders/{{../order.id}}/parts/delete/{{this.id}}" method="POST" class="d-inline" onsubmit="return confirm('¿Quitar esta pieza de la orden? La cantidad será reintegrada al inventario.');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar pieza y devolver a stock">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                        {{else}}
+                                            <span class="text-muted small"><i class="fa-solid fa-lock"></i></span>
+                                        {{/unless}}
+                                    </td>
+                                </tr>
+                                {{else}}
+                                <tr>
+                                    <td colspan="6" class="text-center py-3 text-muted">
+                                        No hay piezas utilizadas en esta orden todavía.
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Evidencias de la orden -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-camera text-orange me-2"></i>5. Evidencias Fotográficas de la Orden
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {{#unless isClosed}}
+                    <div class="bg-light p-3 rounded mb-4 border">
+                        <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-upload me-1"></i>Subir Fotografía de Evidencia (Máx. 2MB: .jpg, .jpeg, .png, .webp)</h6>
+                        <form action="/job-orders/{{order.id}}/evidence/upload" method="POST" enctype="multipart/form-data" class="row g-2 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label small fw-semibold">Archivo de Imagen <span class="text-danger">*</span></label>
+                                <input type="file" name="image" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.webp" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-semibold">Descripción de la Evidencia (Opcional)</label>
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="Ej. Detalle de la pieza dañada o estado de entrega">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm btn-orange w-100">
+                                    <i class="fa-solid fa-cloud-arrow-up me-1"></i> Subir
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {{/unless}}
+
+                    <div class="row g-3">
+                        {{#each evidencesList}}
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="card h-100 shadow-sm border">
+                                <a href="{{this.imagePath}}" target="_blank">
+                                    <img src="{{this.imagePath}}" alt="Evidencia" class="card-img-top" style="height: 180px; object-fit: cover;">
+                                </a>
+                                <div class="card-body p-2 d-flex flex-column justify-content-between">
+                                    <p class="card-text small mb-1 text-dark">{{#if this.description}}{{this.description}}{{else}}<span class="text-muted">Sin descripción</span>{{/if}}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-2 border-top pt-2">
+                                        <span class="text-muted" style="font-size: 0.75rem;">{{formatDate this.createdAt}}</span>
+                                        {{#unless ../isClosed}}
+                                        <form action="/job-orders/{{../order.id}}/evidence/delete/{{this.id}}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta fotografía de evidencia?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="Eliminar">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                        {{/unless}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="col-12 text-center py-4 text-muted">
+                            <i class="fa-solid fa-images fa-2x mb-2 d-block"></i>
+                            No hay evidencias fotográficas registradas para esta orden.
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Resumen financiero de la orden -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0 border-top border-4 border-warning">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fa-solid fa-calculator text-orange me-2"></i>6. Resumen Financiero y Facturación de la Orden
+                    </h5>
+                    <span class="fs-4 fw-bold text-orange">Total a Pagar: ${{formatCurrency order.totalGeneral}}</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-semibold text-secondary">Subtotal de Servicios</td>
+                                            <td class="text-end fw-bold">${{formatCurrency order.subtotalServices}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-semibold text-secondary">Subtotal de Piezas / Repuestos</td>
+                                            <td class="text-end fw-bold">${{formatCurrency order.subtotalParts}}</td>
+                                        </tr>
+                                        <tr class="table-light">
+                                            <td class="fw-bold text-dark">Subtotal General</td>
+                                            <td class="text-end fw-bold text-dark">${{formatCurrency order.subtotalGeneral}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-semibold text-danger">Descuento Aplicado (-)</td>
+                                            <td class="text-end fw-bold text-danger">-${{formatCurrency order.discount}}</td>
+                                        </tr>
+                                        <tr class="table-light">
+                                            <td class="fw-bold text-secondary">Base Imponible</td>
+                                            <td class="text-end fw-bold text-secondary">
+                                                ${{subtract order.subtotalGeneral order.discount}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-semibold text-secondary">
+                                                Impuesto ({{#if order.applyTax}}{{order.taxPercentage}}%{{else}}0%{{/if}}) (+)
+                                            </td>
+                                            <td class="text-end fw-bold text-secondary">${{formatCurrency order.taxAmount}}</td>
+                                        </tr>
+                                        <tr class="table-warning border-2 border-warning">
+                                            <td class="fs-5 fw-bold text-dark">TOTAL GENERAL A PAGAR</td>
+                                            <td class="text-end fs-4 fw-bold text-orange">${{formatCurrency order.totalGeneral}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Panel de configuración financiera -->
+                        <div class="col-lg-5">
+                            <div class="p-3 bg-light rounded border">
+                                <h6 class="fw-bold text-secondary mb-3"><i class="fa-solid fa-sliders me-1"></i>Ajustes de Descuento e Impuestos</h6>
+                                {{#unless isClosed}}
+                                <form action="/job-orders/{{order.id}}/finances" method="POST">
+                                    <div class="mb-3">
+                                        <label for="discount" class="form-label small fw-semibold">Descuento ($)</label>
+                                        <input type="number" step="0.01" min="0" max="{{order.subtotalGeneral}}" class="form-control" id="discount" name="discount" value="{{order.discount}}" placeholder="0.00">
+                                        <div class="form-text">No puede ser mayor que el subtotal general (${{formatCurrency order.subtotalGeneral}}).</div>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="applyTax" name="applyTax" {{#if order.applyTax}}checked{{/if}} onchange="document.getElementById('taxPercentageInput').disabled = !this.checked;">
+                                        <label class="form-check-label fw-semibold" for="applyTax">
+                                            Aplicar Impuesto (ITBIS)
+                                        </label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="taxPercentageInput" class="form-label small fw-semibold">Porcentaje de Impuesto (%)</label>
+                                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="taxPercentageInput" name="taxPercentage" value="{{order.taxPercentage}}" {{#unless order.applyTax}}disabled{{/unless}}>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-dark w-100">
+                                        <i class="fa-solid fa-check me-1"></i> Recalcular y Guardar
+                                    </button>
+                                </form>
+                                {{else}}
+                                    <div class="alert alert-secondary mb-0 small">
+                                        <i class="fa-solid fa-lock me-1"></i> Los valores financieros ya no pueden modificarse porque la orden se encuentra cerrada.
+                                    </div>
+                                {{/unless}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateServicePrice(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const price = selectedOption.getAttribute('data-price');
+    const priceInput = document.getElementById('appliedPriceInput');
+    if (price && priceInput) {
+        priceInput.value = parseFloat(price).toFixed(2);
+    }
+}
+
+function updatePartPrice(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const price = selectedOption.getAttribute('data-price');
+    const stock = selectedOption.getAttribute('data-stock');
+    const priceInput = document.getElementById('partPriceInput');
+    const qtyInput = document.getElementById('partQuantityInput');
+    if (price && priceInput) {
+        priceInput.value = parseFloat(price).toFixed(2);
+    }
+    if (stock && qtyInput) {
+        qtyInput.max = stock;
+    }
+}
+</script>

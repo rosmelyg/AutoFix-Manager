@@ -1,0 +1,23 @@
+# node dependencies
+node_modules/
+
+# environment variables
+.env
+.env.qa
+
+# database
+database.sqlite
+
+# images & uploads folder
+public/uploads/*
+!public/uploads/.gitkeep
+public/assets/images/vehicles/*
+public/assets/images/parts/*
+public/assets/images/evidences/*
+!public/assets/images/vehicles/.gitkeep
+!public/assets/images/parts/.gitkeep
+!public/assets/images/evidences/.gitkeep
+
+# system files
+.DS_Store
+.vscode/
